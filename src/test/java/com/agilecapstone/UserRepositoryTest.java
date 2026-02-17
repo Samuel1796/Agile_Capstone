@@ -75,4 +75,21 @@ class UserRepositoryTest {
         assertTrue(repository.existsById("id1"));
         assertFalse(repository.existsById("id2"));
     }
+
+    @Test
+    void findAll_returnsCopy_modifyingListDoesNotAffectRepository() {
+        repository.save(new User("id1", "Alice", "a@x.com"));
+        List<User> all = repository.findAll();
+        assertEquals(1, all.size());
+        all.clear();
+        assertEquals(1, repository.findAll().size());
+    }
+
+    @Test
+    void save_multipleUsers_findAllReturnsAll() {
+        repository.save(new User("id1", "A", "a@x.com"));
+        repository.save(new User("id2", "B", "b@x.com"));
+        List<User> all = repository.findAll();
+        assertEquals(2, all.size());
+    }
 }

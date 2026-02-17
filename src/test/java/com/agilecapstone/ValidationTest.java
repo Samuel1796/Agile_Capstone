@@ -24,10 +24,23 @@ class ValidationTest {
     }
 
     @Test
+    void isValidId_boundaryLength() {
+        String id64 = "a".repeat(64);
+        assertTrue(Validation.isValidId(id64));
+        assertFalse(Validation.isValidId("a".repeat(65)));
+    }
+
+    @Test
     void isValidName() {
         assertFalse(Validation.isValidName(null));
         assertFalse(Validation.isValidName(""));
         assertTrue(Validation.isValidName("Alice"));
+    }
+
+    @Test
+    void isValidName_boundaryLength() {
+        assertTrue(Validation.isValidName("a".repeat(200)));
+        assertFalse(Validation.isValidName("a".repeat(201)));
     }
 
     @Test
@@ -39,5 +52,13 @@ class ValidationTest {
         assertFalse(Validation.isValidEmail("nodomain@"));
         assertTrue(Validation.isValidEmail("a@b.com"));
         assertTrue(Validation.isValidEmail("user@example.org"));
+    }
+
+    @Test
+    void isValidEmail_boundaryLengthAndFormats() {
+        String email255 = "a@".concat("b".repeat(252));
+        assertTrue(Validation.isValidEmail(email255));
+        assertFalse(Validation.isValidEmail("a@".concat("b".repeat(253))));
+        assertTrue(Validation.isValidEmail("x@y.z"));
     }
 }
