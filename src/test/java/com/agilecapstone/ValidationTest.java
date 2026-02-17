@@ -56,9 +56,10 @@ class ValidationTest {
 
     @Test
     void isValidEmail_boundaryLengthAndFormats() {
-        String email255 = "a@".concat("b".repeat(252));
+        // 255 chars is valid (length > 255 is invalid in Validation)
+        String email255 = "a@".concat("b".repeat(253));  // 2 + 253 = 255
         assertTrue(Validation.isValidEmail(email255));
-        assertFalse(Validation.isValidEmail("a@".concat("b".repeat(253))));
+        assertFalse(Validation.isValidEmail("a@".concat("b".repeat(254))));  // 256 chars
         assertTrue(Validation.isValidEmail("x@y.z"));
     }
 }
