@@ -41,4 +41,13 @@ class UserTest {
         User b = new User("u1", "B", "b@x.com");
         assertEquals(a.hashCode(), b.hashCode());
     }
+
+    @Test
+    void toString_containsIdNameEmail() {
+        User u = new User("id1", "Alice", "alice@example.com");
+        String s = u.toString();
+        assertTrue(s.contains("id1"));
+        assertTrue(s.contains("Alice"));
+        assertTrue(s.contains("alice@example.com"));
+    }
 }
