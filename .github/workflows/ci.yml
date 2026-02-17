@@ -22,5 +22,37 @@ jobs:
       - name: Build
         run: mvn -B compile
 
-      - name: Run tests
+      - name: Test - Executes all unit tests
         run: mvn -B test
+
+      - name: Report - Generates test coverage and results report
+        run: |
+          echo "## Test results" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          if [ -d target/surefire-reports ]; then
+            for f in target/surefire-reports/*.txt; do
+              [ -f "$f" ] && cat "$f" >> $GITHUB_STEP_SUMMARY
+            done
+          fi
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Coverage summary" >> $GITHUB_STEP_SUMMARY
+          if [ -f target/site/jacoco/jacoco.xml ]; then
+            echo "JaCoCo report generated at \`target/site/jacoco/index.html\`" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: |
+            target/surefire-reports/
+            target/site/jacoco/
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: coverage-report
+          path: target/site/jacoco/
